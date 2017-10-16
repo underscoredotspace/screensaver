@@ -1,4 +1,4 @@
-let tri
+let tri // globals are bad, but p5 kinda forces us to do this
 
 class Shape {
   constructor(points) {
@@ -6,7 +6,7 @@ class Shape {
     this.speed = []
     for (let v = 0; v < points; v++) {
       this.pos.push(createVector(random(windowWidth), random(windowHeight)))
-      this.speed.push(this.rv())
+      this.speed.push(rndVector())
     }
   }
 
@@ -16,53 +16,64 @@ class Shape {
       vertex(pos.x, pos.y)
     })
     endShape(CLOSE)
+    this.update()
   }
 
-  move() {
+  update() {
     this.pos.forEach((pos, ndx) => {
       const speed = this.speed[ndx]
-      if (pos.x <= 0 && speed.x <=0) {speed.x = this.rxyP()}
-      if (pos.y <= 0 && speed.y <=0) {speed.y = this.rxyP()}
-      if (pos.x >= windowWidth && speed.x >= 0) {speed.x = this.rxyN()}
-      if (pos.y >= windowHeight && speed.y >= 0) {speed.y = this.rxyN()}
+      if (pos.x <= 0 && speed.x <=0) {speed.x = rndPointP()}
+      if (pos.y <= 0 && speed.y <=0) {speed.y = rndPointP()}
+      if (pos.x >= windowWidth && speed.x >= 0) {speed.x = rndPointN()}
+      if (pos.y >= windowHeight && speed.y >= 0) {speed.y = rndPointN()}
 
       pos.add(speed)
     })
   }
-
-  rv() {
-    const v = createVector(floor(random(-10, 10)), floor(random(-10, 10)))
-    if (v.x === 0) {v.x = 1}
-    if (v.y === 0) {v.y = -1}
-    return v
-  }
-
-  rxyP() {
-    return floor(random(1, 10))
-  }
-
-  rxyN() {
-    return floor(random(-10, 1))
-  }
 }
 
+/* 
+// My vector helper functions 
+*/
+
+// Returns random vector between [-5,-5] and [5,5] 
+function rndVector() {
+  const v = createVector(floor(random(-5, 5)), floor(random(-5, 5)))
+  if (v.x === 0) {v.x = 1}
+  if (v.y === 0) {v.y = -1}
+  return v
+}
+
+
+function rndPointP() {
+  return floor(random(1, 5))
+}
+
+function rndPointN() {
+  return floor(random(-5, 1))
+}
+
+/* 
+// p5 built-in functions
+*/
+
+// called on every frame
 function draw() {
-  background(0)
+  background(255)
   tri.draw()
-  tri.move()
 }
 
+// called once before anything
 function setup() {
-  // frameRate(30)
-  colorMode(HSB)
   createCanvas(windowWidth, windowHeight)
   noFill()
-  noSmooth()
-  strokeWeight(0.5)
-  stroke('white')
+  // noSmooth()
+  strokeWeight(2)
+  stroke(0)
   tri = new Shape(3)
 }
 
+// called when window is resized
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight)
 }
