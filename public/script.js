@@ -1,5 +1,3 @@
-let tri // globals are bad, but p5 kinda forces us to do this
-
 class Shape {
   constructor(points) {
     this.pos = []
@@ -16,16 +14,15 @@ class Shape {
       vertex(pos.x, pos.y)
     })
     endShape(CLOSE)
-    this.update()
   }
 
   update() {
     this.pos.forEach((pos, ndx) => {
       const speed = this.speed[ndx]
-      if (pos.x <= 0 && speed.x <=0) {speed.x = rndPointP()}
-      if (pos.y <= 0 && speed.y <=0) {speed.y = rndPointP()}
-      if (pos.x >= windowWidth && speed.x >= 0) {speed.x = rndPointN()}
-      if (pos.y >= windowHeight && speed.y >= 0) {speed.y = rndPointN()}
+      if (pos.x <= 0 && speed.x <=0) {speed.x = rndPointP()} // Left
+      if (pos.y <= 0 && speed.y <=0) {speed.y = rndPointP()} // Top
+      if (pos.x >= windowWidth && speed.x >= 0) {speed.x = rndPointN()} // Right
+      if (pos.y >= windowHeight && speed.y >= 0) {speed.y = rndPointN()} // Bottom
 
       pos.add(speed)
     })
@@ -53,15 +50,11 @@ function rndPointN() {
   return floor(random(-5, 1))
 }
 
+let tri // globals are bad, but p5 kinda forces us to do this
+
 /* 
 // p5 built-in functions
 */
-
-// called on every frame
-function draw() {
-  background(255)
-  tri.draw()
-}
 
 // called once before anything
 function setup() {
@@ -71,6 +64,13 @@ function setup() {
   strokeWeight(2)
   stroke(0)
   tri = new Shape(3)
+}
+
+// called on every frame
+function draw() {
+  background(255)
+  tri.draw()
+  tri.update()
 }
 
 // called when window is resized
