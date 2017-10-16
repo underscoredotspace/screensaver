@@ -1,13 +1,21 @@
 let tri
 
 class Shape {
-  constructor(x0, y0, x1, y1, x2, y2) {
-    this.pos = [createVector(x0, y0), createVector(x1, y1), createVector(x2, y2)]
-    this.speed = [this.rv(), this.rv(), this.rv()]
+  constructor(points) {
+    this.pos = []
+    this.speed = []
+    for (let v = 0; v < points; v++) {
+      this.pos.push(createVector(random(windowWidth), random(windowHeight)))
+      this.speed.push(this.rv())
+    }
   }
 
   draw() {
-    triangle(this.pos[0].x,this.pos[0].y,this.pos[1].x,this.pos[1].y,this.pos[2].x,this.pos[2].y)
+    beginShape()
+    this.pos.forEach(pos => {
+      vertex(pos.x, pos.y)
+    })
+    endShape(CLOSE)
   }
 
   move() {
@@ -25,7 +33,7 @@ class Shape {
   rv() {
     const v = createVector(floor(random(-10, 10)), floor(random(-10, 10)))
     if (v.x === 0) {v.x = 1}
-    if (v.y === 0) {v.y = 1}
+    if (v.y === 0) {v.y = -1}
     return v
   }
 
@@ -52,7 +60,7 @@ function setup() {
   noSmooth()
   strokeWeight(0.5)
   stroke('white')
-  tri = new Shape()
+  tri = new Shape(3)
 }
 
 function windowResized() {
