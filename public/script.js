@@ -60,7 +60,7 @@ let tri // globals are bad, but p5 kinda forces us to do this
 function setup() {
   createCanvas(windowWidth, windowHeight)
   noFill()
-  // noSmooth()
+  noSmooth()
   strokeWeight(2)
   stroke(0)
   tri = new Shape(3)
