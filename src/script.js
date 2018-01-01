@@ -1,3 +1,5 @@
+import 'p5'
+
 class Shape {
   constructor(points) {
     this.pos = []
@@ -50,30 +52,28 @@ function rndPointN() {
   return floor(random(-5, 1))
 }
 
-let tri // globals are bad, but p5 kinda forces us to do this
-
 /* 
 // p5 built-in functions
 */
 
 // called once before anything
-function setup() {
+window.setup = function setup() {
   createCanvas(windowWidth, windowHeight)
   noFill()
   noSmooth()
   strokeWeight(2)
   stroke(0)
-  tri = new Shape(3)
+  window.poly = new Shape(3)
 }
 
 // called on every frame
-function draw() {
+window.draw = function draw() {
   background(255)
-  tri.draw()
-  tri.update()
+  window.poly.draw()
+  window.poly.update()
 }
 
 // called when window is resized
-function windowResized() {
+window.windowResized = function windowResized() {
   resizeCanvas(windowWidth, windowHeight)
 }

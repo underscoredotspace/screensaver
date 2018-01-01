@@ -2,11 +2,11 @@
 
 ## How to start up
 
-- Install LiveReload in your favourite browser [Chrome](https://chrome.google.com/webstore/detail/livereload/jnihajbhpnppcggbcgedagnkighmdlei)
-- Install dependencies with npm or Yarn (``npm i`` / ``yarn``)
-- Run with ``npm start`` or ``yarn start``
-- Open in your browser at [http://localhost:5000/](http://localhost:5000/)
-- Start LiveReload by clicking the new button in the toolbar
+- Install dependencies with npm or Yarn (`npm i` / `yarn`)
+- Run with `npm start` or `yarn start`
+- Open in your browser at [http://localhost:1234/](http://localhost:1234/)
+
+The project is using ParcelJS to run a dev server automatically. While the dev server is running, saved changes in `src` will be `pushed` to the browser, normally without having to refresh the page. 
 
 ## Additional stuff
 To help you get aquainted with JavaScript, I've put together some pointers on Codepen: 
