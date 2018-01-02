@@ -1,79 +1,118 @@
-import 'p5'
+const createVector = (x, y) => new Vector(x, y)
+const random = (min, max) => Math.floor(Math.random() * (max - min + 1) + min)
+
+class Vector {
+  
+  constructor(x, y) {
+    this.x = x
+    this.y = y
+  }
+  
+  add(v) {
+    this.x += v.x
+    this.y += v.y
+  }
+}
+
+function resizeCanvas(canvas) {
+  canvas.width = window.innerWidth
+  canvas.height = window.innerHeight
+}
 
 class Shape {
-  constructor(points) {
+  constructor(context, points) {
     this.pos = []
     this.speed = []
+    this.trails = []
+
+    this.context = context
     for (let v = 0; v < points; v++) {
-      this.pos.push(createVector(random(windowWidth), random(windowHeight)))
-      this.speed.push(rndVector())
+      this.pos.push(createVector(random(0,window.innerWidth), random(0,window.innerHeight)))
+      this.speed.push(createVector(5, 5))
     }
   }
 
+  _draw(pos = this.pos) {
+    const context = this.context
+
+    context.beginPath()
+    for(let ndx in pos) {
+      const p = pos[ndx]
+      if(ndx === 0) {
+        context.moveTo(p.x, p.y) 
+      } else {
+        context.lineTo(p.x, p.y)
+      }
+    }
+
+    context.closePath()
+    context.stroke()
+  }
+
   draw() {
-    beginShape()
-    this.pos.forEach(pos => {
-      vertex(pos.x, pos.y)
-    })
-    endShape(CLOSE)
+    const context = this.context
+    this._draw()
+    for (let trail of this.trails) {
+      this._draw(trail)
+    }
   }
 
   update() {
-    this.pos.forEach((pos, ndx) => {
+    for (let ndx in this.pos) {
       const speed = this.speed[ndx]
-      if (pos.x <= 0 && speed.x <=0) {speed.x = rndPointP()} // Left
-      if (pos.y <= 0 && speed.y <=0) {speed.y = rndPointP()} // Top
-      if (pos.x >= windowWidth && speed.x >= 0) {speed.x = rndPointN()} // Right
-      if (pos.y >= windowHeight && speed.y >= 0) {speed.y = rndPointN()} // Bottom
+      const pos = this.pos[ndx]
+
+      if (pos.x <= 0 && speed.x <=0) {speed.x = random(1, 5)} // Left
+      if (pos.y <= 0 && speed.y <=0) {speed.y = random(1, 5)} // Top
+      if (pos.x >= window.innerWidth && speed.x >= 0) {speed.x = random(-5, 1)} // Right
+      if (pos.y >= window.innerHeight && speed.y >= 0) {speed.y = random(-5, 1)} // Bottom
 
       pos.add(speed)
-    })
+    }
+
+    let trail = []
+    for (let pos of this.pos) {
+      trail.push({...pos})
+    }
+    this.trails.push(trail)
+    if(this.trails.length >= 200) {
+      this.trails = this.trails.slice(this.trails.length-199, 200)
+    }
   }
 }
 
-/* 
-// My vector helper functions 
-*/
-
-// Returns random vector between [-5,-5] and [5,5] 
-function rndVector() {
-  const v = createVector(floor(random(-5, 5)), floor(random(-5, 5)))
-  if (v.x === 0) {v.x = 1}
-  if (v.y === 0) {v.y = -1}
-  return v
-}
-
-
-function rndPointP() {
-  return floor(random(1, 5))
-}
-
-function rndPointN() {
-  return floor(random(-5, 1))
-}
-
-/* 
-// p5 built-in functions
-*/
-
 // called once before anything
-window.setup = function setup() {
-  createCanvas(windowWidth, windowHeight)
-  noFill()
-  noSmooth()
-  strokeWeight(2)
-  stroke(0)
-  window.poly = new Shape(3)
+function start() {
+  const canvas = document.getElementById('screen')
+  resizeCanvas(canvas)
+
+  const context = canvas.getContext('2d')
+  context.strokeStyle = 'white'
+
+  // called when window is resized
+  window.addEventListener('resize', () => resizeCanvas(canvas))
+
+  const poly = new Shape(context, 4)
+  draw(poly, context)
 }
+
+let lastFrame
 
 // called on every frame
-window.draw = function draw() {
-  background(255)
-  window.poly.draw()
-  window.poly.update()
+function draw(poly, context) {
+  requestAnimationFrame(() => {  
+    draw(poly, context)
+    
+    const now = performance.now()
+    if ((now - lastFrame) < (1000/40)) {return}
+
+    context.fillStyle="black"
+    context.fillRect(0,0,window.innerWidth, window.innerHeight)
+    poly.draw()
+    poly.update()
+    lastFrame = now
+  })
+
 }
 
-// called when window is resized
-window.windowResized = function windowResized() {
-  resizeCanvas(windowWidth, windowHeight)
-}
+start()
