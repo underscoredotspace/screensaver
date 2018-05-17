@@ -15,8 +15,16 @@ class Vector {
 }
 
 function resizeCanvas(canvas) {
-  canvas.width = window.innerWidth
-  canvas.height = window.innerHeight
+  if (this.update) {
+    clearTimeout(this.update)
+    this.update = null
+  }
+  this.update = setTimeout(() => {
+    console.log('updating canvas size')
+    canvas.width = window.innerWidth
+    canvas.height = window.innerHeight
+    this.update = null
+  }, 500);
 }
 
 class Shape {
