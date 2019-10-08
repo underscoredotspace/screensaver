@@ -8,6 +8,6 @@
   "license": "CC-BY-4.0",
   "private": true,
   "dependencies": {
-    "parcel-bundler": "^1.10.3"
+    "parcel-bundler": "^1.12.4"
   }
 }
